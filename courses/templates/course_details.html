@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}Course Details{% endblock %}
+
+{% block content %}
+
+<br>
+<div class="btn-group" role="group" aria-label="Basic outlined example">
+    <a href="{% url 'update-course' course.id %}" type="button" class="btn btn-outline-primary">Update</a>
+    <form method="POST" action="{% url 'delete-course' %}">
+        {% csrf_token %}
+        <input type="hidden" name="course_id" value="{{course.id}}">
+        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</button>
+    </form>
+</div>
+<h1>{{ course.title }}</h1>
+<p>{{ course.description }}</p>
+
+<div class="d-flex justify-content-start align-items-center mb-3">
+    <h2 class="mb-0">Parts</h2>
+    <a href="{% url 'create-course-part' course.id %}" class="btn btn-primary ms-3">
+        Добавить часть
+    </a>
+</div>
+<div class="container">
+    <ul>
+
+        <div class="accordion" id="accordionExample">
+
+            {% for part in course.parts.all %}
+            <div class="accordion-item">
+                <h2 class="accordion-header d-flex justify-content-between align-items-center"
+                    id="heading{{ forloop.counter }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false"
+                            aria-controls="collapse{{ forloop.counter }}">
+                        {{ part.title }}
+                    </button>
+                    <a href="{% url 'create-course-topic' course.id part.id %}"
+                       class="btn btn-sm btn-outline-primary ms-2">[Добавить тему]</a>
+                    <a href="{% url 'update-course-part' course.id part.id %}"
+                       class="btn btn-sm btn-outline-primary ms-2">[Редактировать часть]</a>
+                </h2>
+
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{ forloop.counter }}">
+                    <div class="accordion-body">
+                        {% if part.topics.all %}
+                        {% for topic in part.topics.all %}
+                        <a href="{% url 'update-course-topic' course.id part.id topic.id %}">[Редактировать тему]</a>
+                        <form method="post" action="{% url 'delete-course-topic' course.id part.id topic.id %}"
+                              style="display: inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту тему?');"
+                                    style="background: none; border: none; color: red; text-decoration: underline; cursor: pointer; padding: 0;">
+                                [Удалить тему]
+                            </button>
+                        </form>
+                        <p><strong>{{ topic.title }}</strong></p>
+
+                        <a href="{% url 'create-topic-document' course.id part.id topic.id %}"
+                           class="btn btn-sm btn-outline-primary">Добавить документ</a>
+
+                        <ul class="list-group">
+                            {% for document in topic.documents.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{{ document.file.url }}" download>{{ document.name }}</a>
+                                <div>
+                                    <a href="{% url 'update-topic-document' course.id part.id topic.id document.id %}"
+                                       class="btn btn-sm btn-outline-primary">Редактировать</a>
+                                    <form method="post"
+                                          action="{% url 'delete-topic-document' course.id part.id topic.id document.id %}"
+                                          style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Удалить документ?');">Удалить
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item"><em>No documents</em></li>
+                            {% endfor %}
+                        </ul>
+
+
+                        {% endfor %}
+                        {% else %}
+                        <p>No topics</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+        </div>
+
+
+        <a href="{% url 'courses' %}" class="btn btn-primary ms-3">
+            Back to Courses
+        </a>
+
+        {% endblock %}

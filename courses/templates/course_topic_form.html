@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}{% if is_edit %}Редактировать тему курса{% else %}Создать тему курса{% endif %}{% endblock %}
+
+{% block content %}
+    <h1>{% if is_edit %}Редактировать тему курса{% else %}Создать тему курса{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type="submit" content="Сохранить" %}
+        <a href="{% url 'course-details' course_id %}" class="btn btn-secondary" role="button">Отмена</a>
+    </form>
+{% endblock %}

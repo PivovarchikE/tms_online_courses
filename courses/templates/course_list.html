@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    {% for course in page_obj %}
+    <div class="p-3 mb-1 bg-body-tertiary rounded-3">
+        <div class="container-fluid py-5"><h1 class="display-5 fw-bold">{{ course.title }}</h1>
+            <p class="col-md-8 fs-4" style="text-align: justify;">{{ course.description }}</p>
+            <div class="d-flex justify-content-start align-items-center mt-3">
+                <a href="{% url 'course-details' course.id %}" button class="btn btn-primary btn-lg" type="button">Details</a>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="ms-3">
+            {% include 'pagination.html' with page_obj=page_obj %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
