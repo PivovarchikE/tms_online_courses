@@ -8,7 +8,7 @@ from django.views.decorators.http import require_GET, require_POST, \
 
 from courses import models
 from courses import forms
-from courses.my_signals.custom_signals import course_published
+from courses.signals.custom_signals import course_published
 
 
 @require_GET
