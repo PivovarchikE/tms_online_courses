@@ -6,5 +6,5 @@ class CoursesConfig(AppConfig):
     name = 'courses'
 
     def ready(self):
-        import courses.my_signals.custom_signals
-        import courses.my_signals.model_signals
+        import courses.signals.custom_signals
+        import courses.signals.model_signals
